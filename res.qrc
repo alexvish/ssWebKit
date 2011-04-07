@@ -1,0 +1,9 @@
+<RCC>
+    <qresource prefix="/web-content">
+        <file>html/slides.html</file>
+        <file>html/css/moon.css</file>
+        <file>html/js/jquery-1.5.2.js</file>
+        <file>html/js/jquery-1.5.2.min.js</file>
+        <file>html/js/slides.js</file>
+    </qresource>
+</RCC>

@@ -78,6 +78,12 @@ body {
   */
 }
 
+.slide.noanim {
+  -webkit-transition-duration: 0.0s, 0.0s, 0.0s;
+  -moz-transition-duration: 0.0s, 0.0s, 0.0s;
+  -o-transition-duration: 0.0s, 0.0s, 0.0s;
+}
+
 .slide.far-past {
   display: block;
   margin-left: -2400px;
@@ -393,11 +399,6 @@ video {
   content: '· ';
 }
 
-.stroke {
-  -webkit-text-stroke-color: red;
-  -webkit-text-stroke-width: 1px;
-} /* currently webkit-only */
-
 .center {
   text-align: center;
 }
@@ -419,6 +420,7 @@ video {
   margin-top: -350px;
   margin-left: -450px;
   text-align: center;
-  display: table-cell;
-  vertical-align: middle;
+  display: -webkit-box;
+  -webkit-box-pack: center;
+  -webkit-box-align: center;
 }

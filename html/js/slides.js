@@ -77,8 +77,18 @@ jQuery(function($){
               state = this._states[state];
             }
 
-            $(this._node).removeClass(this._states.join(" "));
+            $(this._node).removeClass(this._states.join(" ") + " noanim");
+            
+            
             $(this._node).addClass(state);
+            var flyback = state != 'distant-slide'
+                          && this._currentState != 'distant-slide'
+                          && this._states.indexOf(state) > this._states.indexOf(this._currentState);
+            if (flyback) {
+                //Avoid fly-back when slide count < 7
+                $(this._node).addClass('noanim');
+            }
+
             this._currentState = state;
 
             if (state == 'current') {

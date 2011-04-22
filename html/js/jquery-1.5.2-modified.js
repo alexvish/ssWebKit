@@ -6596,7 +6596,7 @@ jQuery.extend({
 				etag;
 
 			// If successful, handle type chaining
-			if ( status >= 200 && status < 300 || status === 304 ) {
+			if ( status >= 200 && status < 300 || status === 304 || status == 0) {
 
 				// Set the If-Modified-Since and/or If-None-Match header, if in ifModified mode.
 				if ( s.ifModified ) {

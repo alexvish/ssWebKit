@@ -1,3 +1,26 @@
+/**
+ * Copyright 2011 Alexey Vishentsev.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * 
+ */
+ 
+ 
+ 
+ 
+ 
+ 
+ 
 jQuery(function($){
         
         // modernizr lite via https://gist.github.com/598008
@@ -27,27 +50,6 @@ jQuery(function($){
 
         var canTransition = testStyle('transition');
         
-        /* Thank you, Tim Down
-         * http://stackoverflow.com/questions/298750/how-do-i-select-text-nodes-with-jquery
-         */
-        var getTextNodesIn = function (node, includeWhitespaceNodes) {
-            var textNodes = [], whitespace = /^\s*$/;
-
-            function getTextNodes(node) {
-                if (node.nodeType == 3) {
-                    if (includeWhitespaceNodes || !whitespace.test(node.nodeValue)) {
-                        textNodes.push(node.nodeValue);
-                    }
-                } else {
-                    for (var i = 0, len = node.childNodes.length; i < len; ++i) {
-                        getTextNodes(node.childNodes[i]);
-                    }
-                }
-            }
-
-            getTextNodes(node);
-            return textNodes;
-        };
         
         //
         // Slide class
@@ -57,8 +59,8 @@ jQuery(function($){
           if (this._node) {
             $(this._node).addClass('slide distant-slide');
           }
-          this._titleElem = $('.title',this._node).first()[0];
-          this._title = this._titleElem?getTextNodesIn(this._titleElem,false).join(" "):'Slide ' + (index + 1);
+          this._titleElem = $('.title',this._node).eq(0);
+          this._title = (this._titleElem && this._titleElem.length)?$(this._titleElem).text():'Slide ' + (index + 1);
           var me = this;
           this._node.addEventListener('webkitTransitionEnd',function(){me.endOfTransition();},false);
         };
@@ -95,7 +97,7 @@ jQuery(function($){
               $('#presentation-counter').html(this._title);
               this._onLoad();
             } else {
-              (this._titleElem) && (this._titleElem.style.display='none');
+              (this._titleElem) && (this._titleElem.css('display','none'));
               this._onUnload();
             }
           },
@@ -141,7 +143,7 @@ jQuery(function($){
           },
           endOfTransition: function() {
              if(this._titleElem && this._currentState == 'current') {
-                this._titleElem.style.display='block';                
+                this._titleElem.css('display','block');                
              }
           }
         };
@@ -149,7 +151,7 @@ jQuery(function($){
         //
         // SlideShow class
         //
-        var SlideShow = function() {
+        SlideShow = function() {
           _self = this;
           this._slides = $('.slide').map(function(index,slideElem) {
             return new Slide(slideElem,index);
@@ -167,6 +169,9 @@ jQuery(function($){
           this._update();
           var _t = this;
           var goNext = function() {
+            if (!_t._isRunning) {
+                return;
+            }
             _t.next();
             setTimeout(goNext,_t.timeout);
           }
@@ -176,6 +181,7 @@ jQuery(function($){
         SlideShow.prototype = {
           _presentationCounter: $('#presentation-counter'),
           _slides: [],
+          _isRunning: true,
           
           _getCurrentIndex: function() {
             return $('.slide').index($('#' + this.current));
@@ -220,12 +226,97 @@ jQuery(function($){
             }
             this.current = next.attr("id");
             this._update();
+          },
+          stop:function() {
+            this._isRunning = false;
           }
         };
                 
-        // Initialize
-        var slideshow = new SlideShow();
+        var startSlideShow = function () {
+            slideshow = new SlideShow();
+            $('.slides').css('display', 'block');
+        };
         
-        $('.slides').css('display', 'block');
+        var stopSlideShow = function () {
+            if (typeof(slideshow) != "undefined" && slideshow != undefined) {
+               slideshow.stop();
+               $('.slides').css('display', 'none');
+            }
+        };
+        
+        SlideDescr=function(){};
+        SlideDescr.prototype = {
+            id: null,
+            title: null,
+            doc: null,
+            image: null,
+            generateHtml: function() {
+                var html = '<div class="slide" id="' + this.id + '">';
+                if (this.title != null && this.title.length > 0) {
+                    html += '<section class="title">';
+                    html += this.title;
+                    html += '</section>';
+                }
+                if (this.doc != null) {
+                    html += '<section class="middle">';
+                    html += '<iframe width="100%" height="100%" _src="' + this.doc + '"/>';
+                    html += '</section>';                
+                } else if (this.image != null) {
+                    html += '<section class="middle">';
+                    html += '<img style="max-width:95%;max-height:95%" src="' + this.image + '"/>';
+                    html += '</section>';
+                }
+                html += '</div>';
+                return html;
+            }
+        };
+        
+        var convertFeed = function(xml) {
+            var slideDescrs=new Array();
+            $('item',xml).each(function(index,item){
+                var slide = new SlideDescr();
+                slide.id ='slide' + index;
+                slide.title = $(this).find('title').eq(0).text();
+                slide.doc = $(this).find('content[medium="document"]').eq(0).attr('url');
+                slide.image = $(this).find('content[medium="image"]').eq(0).attr('url');
+                slideDescrs.push(slide);
+            });
+            //shuffle slides
+            for(var i = slideDescrs.length - 1; i>0;i--) {
+                var j = Math.floor(Math.random()*(i+1));
+                var tmp = slideDescrs[j];
+                slideDescrs[j] = slideDescrs[i];
+                slideDescrs[i] = tmp;
+            }
+            
+            var slidesContent = '';
+            while(s=slideDescrs.shift()) {
+                slidesContent += s.generateHtml();
+            }
+            return slidesContent;
+        };
+        
+        var loadFeed = function() {
+            var feedUrl = $('.slides').attr('feed-url');
+            if (feedUrl == undefined) {
+                return;
+            }
+            $.ajax({
+               url: feedUrl,
+               dataType: 'xml',
+               success:function(xml) {
+                  stopSlideShow();
+                  var html = convertFeed(xml);
+                  var feedUpdateTimeout=jQuery('ttl',xml).text()*60*1000;
+                  if (isNaN(feedUpdateTimeout) || feedUpdateTimeout < 30000) {
+                    feedUpdateTimeout = 10*60*1000;
+                  }
+                  setTimeout(loadFeed,feedUpdateTimeout);
+                  $('.slides').eq(0).html(html);
+                  startSlideShow();
+               }
+            });
+        };
+        loadFeed();
     
 })

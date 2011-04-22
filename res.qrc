@@ -2,8 +2,14 @@
     <qresource prefix="/web-content">
         <file>html/slides.html</file>
         <file>html/css/moon.css</file>
-        <file>html/js/jquery-1.5.2.js</file>
         <file>html/js/jquery-1.5.2.min.js</file>
         <file>html/js/slides.js</file>
+        <file>html/rss/About.html</file>
+        <file>html/rss/HowTo.html</file>
+        <file>html/rss/rnorm.png</file>
+        <file>html/rss/rss.xml</file>
+        <file>html/rss/test_image.jpg</file>
+        <file>html/js/jquery-1.5.2-modified.js</file>
+        <file>html/rss/screensaverdialog.png</file>
     </qresource>
 </RCC>

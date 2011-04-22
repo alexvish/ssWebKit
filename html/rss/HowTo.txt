@@ -1,0 +1,8 @@
+How to use ssWebKit
+===================
+
+. Compile ssWebKit source code or obtain binary distribution of ssWebKit
+. Copy +ssWebKit.scr+ with all nessessary dll libraries to +WINDOWS/system32+ folder
+. Open Windows "Screen Saver Configuration" dialog, select 'WebKit' in "ScreenSaver" drop-down box. Press "Parameters" button to select screensaver url.
+image:screensaverdialog.png[height="70%"]
+

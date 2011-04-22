@@ -1,0 +1,48 @@
+<html>
+<head>
+<title>Test timer shutdown</title>
+<script language="javascript">
+<!--
+   function init() {
+       console.log("Init");
+       TimeDispatcher = function() {
+            var _t = this;
+            var onTimeout = function() {
+                _t.onTimer();
+                if (_t.isRunning) {
+                    setTimeout(onTimeout,_t.timeout);
+                }
+            }
+            setTimeout(onTimeout,_t.timeout);
+       };
+       
+       TimeDispatcher.prototype = {
+           timeout: 3000,
+           isRunning: true,
+           onTimer:function() {
+                if (!this.isRunning) {
+                    return;
+                }
+                console.log("On Time");
+           },
+           stop:function() {
+              this.isRunning = false;
+           }
+       };
+       
+       tDispatch = new TimeDispatcher();
+   }
+   
+   function stop() {
+      console.log("Stop");
+      tDispatch.stop();
+      tDispatch = new TimeDispatcher();
+   }
+
+-->
+</script>
+</head>
+<body onLoad="init()">
+   <input type="button" value="Stop" onClick="stop()"/>
+<body>
+</html>

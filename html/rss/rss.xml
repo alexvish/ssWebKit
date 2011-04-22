@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?> 
+<!--
+  Copyright 2011 Alexey Vishentsev.
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
+
+
+<rss version="2.0"
+        xmlns:media="http://search.yahoo.com/mrss/"
+        xmlns:dc="http://purl.org/dc/elements/1.1/"> 
+    <channel> 
+        <title>Test rss feed for ssWebKit screensaver</title> 
+        <link>https://github.com/alexvish/ssWebKit/</link> 
+        <description>Test rss feed for ssWebKit screensaver</description> 
+        <pubDate>Mon, 18 Apr 2011 01:48:45 +0300</pubDate> 
+        <lastBuildDate>Mon, 18 Apr 2011 01:48:45 +0300</lastBuildDate>
+        <ttl>2</ttl>
+        
+        <item>
+            <title>Test jpeg image</title>
+            <description>This is a test jpeg image</description>
+            <pubDate>Mon, 18 Apr 2011 01:48:45 +0300</pubDate>
+            <media:content
+                url="qrc://res/web-content/html/rss/test_image.jpg"
+                medium="image"
+                type="image/jpeg"
+                height="1600"
+                width="1200"
+                />
+        </item>
+        <item>
+            <title>Test png image</title>
+            <description>This is a test png image</description>
+            <pubDate>Mon, 18 Apr 2011 01:48:45 +0300</pubDate>
+            <media:content
+                url="qrc://res/web-content/html/rss/rnorm.png"
+                medium="image"
+                type="image/png"
+                height="480"
+                width="480"
+                />
+        </item>
+        <item>
+            <title>About ssWebKit</title>
+            <description>About ssWebKit</description>
+            <pubDate>Mon, 18 Apr 2011 01:48:45 +0300</pubDate>
+            <media:content
+                url="qrc://res/web-content/html/rss/About.html"
+                medium="document"
+                type="text/html"
+                />
+        </item>
+        <item>
+            <title>How to use ssWebKit</title>
+            <description>How to use ssWebKit</description>
+            <pubDate>Mon, 18 Apr 2011 01:48:45 +0300</pubDate>
+            <media:content
+                url="qrc://res/web-content/html/rss/HowTo.html"
+                medium="document"
+                type="text/html"
+                />
+        </item>
+    
+    </channel>
+</rss>    

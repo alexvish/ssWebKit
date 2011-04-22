@@ -23,3 +23,10 @@ RESOURCES += \
 HEADERS += \
     webkitwidget.h \
     screensaver.h
+
+CONFIG += static
+static {
+    CONFIG += static
+    DEFINES += STATIC
+    message("Static build")
+}

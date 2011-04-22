@@ -1,138 +1,58 @@
 <!DOCTYPE html>
+<!--
+  Copyright 2011 Alexey Vishentsev.
 
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+  
+  Original copiright see below
+-->
+<!--
+  Copyright 2011 Google Inc.
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+
+  Original slides: Marcin Wichary (mwichary@google.com)
+  Modifications: Chrome DevRel Team (chrome-devrel@googlegroups.com)
+                 Alex Russell (slightlyoff@chromium.org)
+                 Brad Neuberg
+-->
 <html>
   <head>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=Edge;chrome=1" />
     <title>Slides</title>
     <link href="css/moon.css" rel="stylesheet" />
-    <script src="js/jquery-1.5.2.min.js" ></script>
+    <!-- 
+    jquery is modified here only to allow ajax requests on qrc:// urls
+    use "normal" jquery in your applications
+    -->
+    <script src="js/jquery-1.5.2-modified.js" ></script>
     <script src="js/slides.js" ></script>
   </head>
   <body>
     <div class="presentation">
       <div id="presentation-counter">Loading...</div>
-      <div class="slides">
-        <div class="slide" id="first-slide">
-          <style>
-            #landing-slide p {
-              font-size: 35px;
-            }
-            p#disclaimer-message {
-              font-size: 20px;
-            }
-          </style>
-          <section class="title">First slide</section>
-          <section class="middle">
-            <p>FIRST</p>
-            <p>Press <span id="left-init-key" class="key">&rarr;</span> key to advance.</p>
-            <p id="disclaimer-message">Having issues seeing the presentation? Read the <a href="disclaimer.html">disclaimer</a></p>
-          </section>
-          
-        </div> <!-- slide first-slide -->
-        
-        <div class="slide" id="second-slide">
-          <style>
-            #landing-slide p {
-              font-size: 35px;
-            }
-            p#disclaimer-message {
-              font-size: 20px;
-            }
-          </style>
-          <section class="title">Second asdfasdfasdfasdfasdfasdfasdf asdfasdfasd fasdfasdfasdf asdfasdfadsfas dfasdfasdfasdfasdf slide</section>
-
-          <section class="middle">
-            <p>SECOND</p>
-            <p>Press <span id="left-init-key" class="key">&rarr;</span> key to advance.</p>
-            <p id="disclaimer-message">Having issues seeing the presentation? Read the <a href="disclaimer.html">disclaimer</a></p>
-          </section>
-        </div> <!-- slide second-slide -->
-        <div class="slide" id="second-slide1">
-          <style>
-            #landing-slide p {
-              font-size: 35px;
-            }
-            p#disclaimer-message {
-              font-size: 20px;
-            }
-          </style>
-          <section class="middle">
-            <p>SECOND1</p>
-            <p>Press <span id="left-init-key" class="key">&rarr;</span> key to advance.</p>
-            <p id="disclaimer-message">Having issues seeing the presentation? Read the <a href="disclaimer.html">disclaimer</a></p>
-          </section>
-        </div> <!-- slide second-slide1 -->
-        <div class="slide" id="second-slide2">
-          <style>
-            #landing-slide p {
-              font-size: 35px;
-            }
-            p#disclaimer-message {
-              font-size: 20px;
-            }
-          </style>
-          <section class="middle">
-            <p>SECOND2</p>
-            <p>Press <span id="left-init-key" class="key">&rarr;</span> key to advance.</p>
-            <p id="disclaimer-message">Having issues seeing the presentation? Read the <a href="disclaimer.html">disclaimer</a></p>
-          </section>
-        </div> <!-- slide second-slide2 -->
- 
-
-        <div class="slide" id="second-slide3">
-          <style>
-            #landing-slide p {
-              font-size: 35px;
-            }
-            p#disclaimer-message {
-              font-size: 20px;
-            }
-          </style>
-          <section class="middle">
-            <p>SECOND2</p>
-            <p>Press <span id="left-init-key" class="key">&rarr;</span> key to advance.</p>
-            <p id="disclaimer-message">Having issues seeing the presentation? Read the <a href="disclaimer.html">disclaimer</a></p>
-          </section>
-        </div> <!-- slide second-slide3 -->
- 
-
-        <div class="slide" id="second-slide4">
-          <style>
-            #landing-slide p {
-              font-size: 35px;
-            }
-            p#disclaimer-message {
-              font-size: 20px;
-            }
-          </style>
-          <section class="middle">
-            <p>SECOND2</p>
-            <p>Press <span id="left-init-key" class="key">&rarr;</span> key to advance.</p>
-            <p id="disclaimer-message">Having issues seeing the presentation? Read the <a href="disclaimer.html">disclaimer</a></p>
-          </section>
-        </div> <!-- slide second-slide4 -->
- 
-
-        <div class="slide" id="second-slide5">
-          <style>
-            #landing-slide p {
-              font-size: 35px;
-            }
-            p#disclaimer-message {
-              font-size: 20px;
-            }
-          </style>
-          <section class="middle">
-            <p>SECOND2</p>
-            <p>Press <span id="left-init-key" class="key">&rarr;</span> key to advance.</p>
-            <p id="disclaimer-message">Having issues seeing the presentation? Read the <a href="disclaimer.html">disclaimer</a></p>
-          </section>
-        </div> <!-- slide second-slide5 -->
- 
-
-
-
+      <div class="slides" feed-url="qrc://res/web-content/html/rss/rss.xml">
       </div> <!-- slides -->
     
     </div> <!-- presentation -->

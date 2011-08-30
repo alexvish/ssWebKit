@@ -27,7 +27,7 @@
 
 class ScreenSaver {
 public:
-    ScreenSaver(QApplication* app);
+    ScreenSaver(QApplication* app, int screenNo);
     ScreenSaver(QApplication* app, WId parentWid);
     ~ScreenSaver();
     void closeOnMouseAndKeyboardEvents();

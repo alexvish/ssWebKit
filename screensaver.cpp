@@ -23,8 +23,11 @@
 #include <windows.h>
 
 
-ScreenSaver::ScreenSaver(QApplication* app){
-    for (int i = 0, n = QApplication::desktop()->numScreens(); i < n; i++) {
+ScreenSaver::ScreenSaver(QApplication* app, int screenNo){
+    for (int i = 0,n = QApplication::desktop()->numScreens(); i < n; i++) {
+        if (screenNo >=0 && screenNo != i) {
+            continue;
+        }
         WebkitWidget* w = new WebkitWidget();
         widgets.prepend(w);
         w->setAttribute(Qt::WA_DeleteOnClose);
@@ -34,7 +37,6 @@ ScreenSaver::ScreenSaver(QApplication* app){
         w->resize(screenRes.width(),screenRes.height());
         w->showFullScreen();
     }
-    app -> setOverrideCursor(QCursor(Qt::BlankCursor));
 }
 
 

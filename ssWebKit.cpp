@@ -29,6 +29,7 @@ int main(int argc, char* argv[]) {
 
     QApplication app(argc,argv);
     QStringList args = app.arguments();
+    int screenNo = -1;
 
 
     enum Mode{
@@ -74,12 +75,32 @@ int main(int argc, char* argv[]) {
                     noErrors = true;
                 }
                 break;
+        case '0':
+            screenNo = 0;
+            noErrors = QApplication::desktop()->numScreens() > 0;
+            break;
+        case '1':
+            screenNo = 1;
+            noErrors = QApplication::desktop()->numScreens() > 1;
+            break;
+        case '2':
+            screenNo = 2;
+            noErrors = QApplication::desktop()->numScreens() > 2;
+            break;
+        case '3':
+            screenNo = 3;
+            noErrors = QApplication::desktop()->numScreens() > 3;
+            break;
         }
     }
     if (!noErrors) {
         QMessageBox::critical(0,"ScreenSaver Error","Could not parse arguments:\n"
                               + args.join("\n")
                               +"\n Valid args are:\n"
+                              + "    /0 - test mode on screen 0\n"
+                              + "    /1 - test mode on screen 1\n"
+                              + "    /2 - test mode on screen 2\n"
+                              + "    /3 - test mode on screen 3\n"
                               + "    /S - screensaver mode\n"
                               + "    /P windowPid| /P:windowPid - preview mode\n"
                               + "    /C - config mode\n");
@@ -95,10 +116,11 @@ int main(int argc, char* argv[]) {
 
     switch(mode) {
         case TEST:
-            ss = new ScreenSaver(&app);
+            ss = new ScreenSaver(&app,screenNo);
             break;
         case Show:
-            ss = new ScreenSaver(&app);
+            ss = new ScreenSaver(&app,screenNo);
+            app.setOverrideCursor(QCursor(Qt::BlankCursor));
             ss->closeOnMouseAndKeyboardEvents();
             break;
         case Preview:

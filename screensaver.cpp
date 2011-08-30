@@ -22,11 +22,11 @@
 #include <qalgorithms.h>
 #include <windows.h>
 
+
 ScreenSaver::ScreenSaver(QApplication* app){
     for (int i = 0, n = QApplication::desktop()->numScreens(); i < n; i++) {
         WebkitWidget* w = new WebkitWidget();
         widgets.prepend(w);
-
         w->setAttribute(Qt::WA_DeleteOnClose);
         QObject::connect(w,SIGNAL(destroyed()), app, SLOT(quit()));
         QRect screenRes = QApplication::desktop()->screenGeometry(i);
@@ -37,22 +37,24 @@ ScreenSaver::ScreenSaver(QApplication* app){
     app -> setOverrideCursor(QCursor(Qt::BlankCursor));
 }
 
-ScreenSaver::ScreenSaver(QApplication* app, WId parent_Wid){
-    WebkitWidget* w = new WebkitWidget();
-    widgets.prepend(w);
 
+ScreenSaver::ScreenSaver(QApplication* app, WId parent_Wid){
+    WebkitWidget* w = new WebkitWidget(parent_Wid);
+    widgets.prepend(w);
     w->setAttribute(Qt::WA_DeleteOnClose);
     QObject::connect(w,SIGNAL(destroyed()), app, SLOT(quit()));
-
-    w->setWindowFlags(Qt::FramelessWindowHint|Qt::SubWindow);
-    ::SetParent(w->winId(),parent_Wid);
     RECT parentRect;
     GetClientRect(parent_Wid,&parentRect);
+    LONG width = parentRect.right - parentRect.left;
+    LONG height = parentRect.bottom - parentRect.top;
+    QRect screenRes = QApplication::desktop()->screenGeometry();
+    w->scale(qreal(width)/screenRes.width(),qreal(height)/screenRes.height());
+    w->resize(width,height);
     w->move(0,0);
-    w->resize(parentRect.right,parentRect.bottom);
     w->show();
-
 }
+
+
 
 ScreenSaver::~ScreenSaver() {
     qDeleteAll(widgets);

@@ -32,14 +32,17 @@ class EventFilter;
 class WebkitWidget:public QGraphicsView {
 public:
     WebkitWidget();
+    WebkitWidget(WId parent_WId);
     ~WebkitWidget();
     void closeOnMouseAndKeyboardEvents();
+protected:
+    virtual void resizeEvent(QResizeEvent *event);
 private:
     friend class EventFilter;
     void initUI();
-    QGridLayout* layout;
-    QWebView* view;
-    QGLWidget* glWidget;
+    //QGridLayout* layout;
+    QGraphicsScene* scene;
+    QGraphicsWebView* view;
     EventFilter* eventFilter;
 };
 

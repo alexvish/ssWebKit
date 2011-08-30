@@ -22,7 +22,10 @@
 #include "webkitwidget.h"
 #include "screensaver.h"
 
+WId previewWId(QString s);
+
 int main(int argc, char* argv[]) {
+
 
     QApplication app(argc,argv);
     QStringList args = app.arguments();
@@ -59,9 +62,16 @@ int main(int argc, char* argv[]) {
             case 'P':
                 mode = Preview;
                 if(args[i].size()>=4 && args[i][2]==':') {
-                        preview_parent_WId = (WId)args[i].mid(3).toUInt(&noErrors);
+                    args[i].mid(3);
+                    preview_parent_WId = previewWId(args[i].mid(3));
                 } else if(args.size()>i) {
-                    preview_parent_WId = (WId)args[i+1].toUInt(&noErrors);
+                    preview_parent_WId = previewWId(args[i+1]);
+                    i++;
+                } else {
+                    preview_parent_WId = 0;
+                }
+                if (preview_parent_WId) {
+                    noErrors = true;
                 }
                 break;
         }
@@ -92,10 +102,10 @@ int main(int argc, char* argv[]) {
             ss->closeOnMouseAndKeyboardEvents();
             break;
         case Preview:
-            return 0;
+            //return 0;
             //something is really wrong with preview
-            //ss = new ScreenSaver(&app,preview_parent_WId);
-            //break;
+            ss = new ScreenSaver(&app,preview_parent_WId);
+            break;
         case Config:
             QSettings settings("QT","ssWebKit");
             QString urlString = settings.value("url","qrc://res/web-content/html/slides.html").toString();
@@ -113,3 +123,45 @@ int main(int argc, char* argv[]) {
     }
     return result;
 }
+
+#include <tchar.h>
+
+WId previewWId(QString s) {
+    if (s == "Scrprev") {
+        return (WId)FindWindow(L"Scrprev",NULL);
+    } else {
+        bool convertedOk;
+        WId result = (WId)s.toUInt(&convertedOk);
+        if (convertedOk) {
+            return result;
+        } else {
+            return 0;
+        }
+    }
+}
+
+/*
+
+HWND CheckForScrprev() {
+
+  HWND hwnd=FindWindow(_T("Scrprev"),NULL); // looks for the Scrprev class
+  if (hwnd==NULL) // try to load it
+  {
+    STARTUPINFO si; PROCESS_INFORMATION pi; ZeroMemory(&si,sizeof(si)); ZeroMemory(&pi,sizeof(pi));
+    si.cb=sizeof(si);
+    TCHAR cmd[MAX_PATH]; _tcscpy(cmd,_T("Scrprev")); // unicode CreateProcess requires it writeable
+    BOOL cres=CreateProcess(NULL,cmd,0,0,FALSE,CREATE_NEW_PROCESS_GROUP | CREATE_DEFAULT_ERROR_MODE,
+                            0,0,&si,&pi);
+    if (!cres) {Debug(_T("Error creating scrprev process")); return NULL;}
+    DWORD wres=WaitForInputIdle(pi.hProcess,2000);
+    if (wres==WAIT_TIMEOUT) {Debug(_T("Scrprev never becomes idle")); return NULL;}
+    if (wres==0xFFFFFFFF) {Debug(_T("ScrPrev, misc error after ScrPrev execution"));return NULL;}
+    hwnd=FindWindow(_T("Scrprev"),NULL);
+  }
+  if (hwnd==NULL) {Debug(_T("Unable to find Scrprev window")); return NULL;}
+  ::SetForegroundWindow(hwnd);
+  hwnd=GetWindow(hwnd,GW_CHILD);
+  if (hwnd==NULL) {Debug(_T("Couldn't find Scrprev child")); return NULL;}
+  return hwnd;
+}
+*/

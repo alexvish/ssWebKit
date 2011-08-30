@@ -19,11 +19,21 @@
  */
 
 #include "webkitwidget.h"
+#include <windows.h>
 
 
 WebkitWidget::WebkitWidget()
-    :QGraphicsView()
-    ,eventFilter(NULL) {
+    :QGraphicsView(),
+     eventFilter(NULL)
+{
+    this->initUI();
+}
+
+WebkitWidget::WebkitWidget(WId parentWId)
+    : QGraphicsView(),
+      eventFilter(NULL){
+    SetParent(this->winId(),parentWId);
+    SetWindowLong(this->winId(),GWL_STYLE,WS_CHILDWINDOW|WS_VISIBLE);
     this->initUI();
 }
 
@@ -32,9 +42,9 @@ WebkitWidget::~WebkitWidget() {
         delete eventFilter;
     }
     destroy();
-    delete view;
-    delete layout;
+    //delete layout;
 }
+
 
 
 void WebkitWidget::initUI() {
@@ -42,16 +52,23 @@ void WebkitWidget::initUI() {
     QString urlString = settings.value("url","qrc://res/web-content/html/slides.html").toString();
     QUrl url = QUrl(urlString);
 
-    layout = new QGridLayout(this);
-    layout->setContentsMargins(0,0,0,0);
+    scene = new QGraphicsScene();
+    setScene(scene);
+    //layout = new QGridLayout(this);
+    //layout->setContentsMargins(0,0,0,0);
 
-    QWebSettings::globalSettings()->setAttribute(QWebSettings::DeveloperExtrasEnabled,true);
 
-    view = new QWebView(this);
-    view->setRenderHints(QPainter::Antialiasing|QPainter::TextAntialiasing);
-    layout->addWidget(view,0,0,1,1);
+    view = new QGraphicsWebView();
+    view->setFiltersChildEvents(true);
+    view->settings()->setAttribute(QWebSettings::DeveloperExtrasEnabled,true);
+    view->settings()->setAttribute(QWebSettings::AcceleratedCompositingEnabled,false);
+    view->setResizesToContents(false);
     view->load(url);
 
+
+    scene->addItem(view);
+    setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 }
 
 void WebkitWidget::closeOnMouseAndKeyboardEvents() {
@@ -60,21 +77,36 @@ void WebkitWidget::closeOnMouseAndKeyboardEvents() {
     }
 }
 
+void WebkitWidget::resizeEvent(QResizeEvent *event) {
+    view->resize(width()/matrix().m11(),height()/matrix().m22());
+    QGraphicsView::resizeEvent(event);
+}
+
 
 EventFilter::EventFilter (WebkitWidget* w)
     :QObject(w)
     ,p(-1,-1)
 {
+    w->installEventFilter(this);
     w->view->installEventFilter(this);
 }
 
 EventFilter::~EventFilter() {
+
 }
 
 bool EventFilter::eventFilter(QObject *obj, QEvent *event) {
     // quit if key is pressed or mouse is moved or pressed
     if (event->type() == QEvent::KeyPress
-            || event->type() == QEvent::MouseButtonPress) {
+            || event->type() == QEvent::MouseButtonPress
+            || event->type() == QEvent::GraphicsSceneMousePress
+            || event->type() == QEvent::GraphicsSceneWheel
+            || event->type() == QEvent::GraphicsSceneContextMenu
+            || event->type() == QEvent::GraphicsSceneDragMove
+            || event->type() == QEvent::GraphicsSceneDrop
+            || event->type() == QEvent::GraphicsSceneHelp
+            || event->type() == QEvent::GraphicsSceneMouseDoubleClick
+            ) {
 
 
         qobject_cast<QWidget*>(this->parent())->close();
@@ -86,5 +118,20 @@ bool EventFilter::eventFilter(QObject *obj, QEvent *event) {
                     qobject_cast<QWidget*>(this->parent())->close();
             p = mouseEvent->pos();
     }
+    if (event->type()==QEvent::GraphicsSceneMouseMove) {
+        QGraphicsSceneMouseEvent *gscMouseEvent = static_cast<QGraphicsSceneMouseEvent*>(event);
+
+        if(p != QPoint(-1, -1) && (p-(gscMouseEvent->pos())).manhattanLength()>3)
+                qobject_cast<QWidget*>(this->parent())->close();
+        p = gscMouseEvent->pos().toPoint();
+    }
+    if (event->type()==QEvent::GraphicsSceneHoverMove) {
+        QGraphicsSceneHoverEvent *gscHoverEvent = static_cast<QGraphicsSceneHoverEvent*>(event);
+
+        if(p != QPoint(-1, -1) && (p-gscHoverEvent->pos().toPoint()).manhattanLength()>3)
+                qobject_cast<QWidget*>(this->parent())->close();
+        p = gscHoverEvent->pos().toPoint();
+    }
+
     return false;
 }

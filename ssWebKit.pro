@@ -13,7 +13,8 @@ TEMPLATE = app
 SOURCES += \
     ssWebKit.cpp \
     webkitwidget.cpp \
-    screensaver.cpp
+    screensaver.cpp  \
+    main.cpp
 
 
 
